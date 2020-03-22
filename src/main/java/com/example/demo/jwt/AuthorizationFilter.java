@@ -32,30 +32,30 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws
             ServletException, IOException {
 
-        try {
-            String token = request.getHeader("Authorization");
-            String jwt = token.replace("Bearer ", "");
+                try {
+                    String token = request.getHeader("Authorization");
+                    String jwt = token.replace("Bearer ", "");
 
-            if (!(jwt.equals(null)) && jwtTokenProvider.ValidateToken(jwt)) {
+                    if (!(jwt.equals(null)) && jwtTokenProvider.ValidateToken(jwt)) {
 
-                Jws<Claims> claims = Jwts.parserBuilder()
-                        .setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getKey().getBytes()))
-                        .build().parseClaimsJws(jwt);
+                        Jws<Claims> claims = Jwts.parserBuilder()
+                                .setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getKey().getBytes()))
+                                .build().parseClaimsJws(jwt);
 
-                String username = claims.getBody().getSubject();
+                        String username = claims.getBody().getSubject();
 
-                User user = (User) userDetailsService.loadUserByUsername(username);
-                Authentication auth = new UsernamePasswordAuthenticationToken(username, null, user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                        User user = (User) userDetailsService.loadUserByUsername(username);
+                        Authentication auth = new UsernamePasswordAuthenticationToken(username, null, user.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(auth);
 
 
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.warn("issue with spring security context");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.warn("issue with spring security context");
         }
 
         filterChain.doFilter(request, response);

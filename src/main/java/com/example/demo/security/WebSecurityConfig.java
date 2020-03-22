@@ -48,8 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable().
-                exceptionHandling().authenticationEntryPoint(auth)
-                .accessDeniedHandler(accessDeniedHandler)
+                exceptionHandling().authenticationEntryPoint(auth).accessDeniedHandler(accessDeniedHandler)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
